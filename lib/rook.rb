@@ -4,6 +4,7 @@ class Rook
 	def initialize (color)
 		@color = color
 		@captured = false
+		@moved = false
 		assign_symbol 
 	end
 

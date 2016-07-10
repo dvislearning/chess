@@ -1,7 +1,10 @@
 require 'colorize'
+require_relative 'pawn'
+require_relative 'knight'
 require_relative 'bishop'
 require_relative 'rook'
-require_relative 'knight'
+require_relative 'queen'
+require_relative 'king'
 
 class Board
 	attr_reader :state
@@ -21,6 +24,7 @@ class Board
 	 	@state[0][0] = Rook.new("white")
 	 	@state[0][1] = Knight.new("white")
 	 	@state[0][2] = Bishop.new("white","black")
+	 	@state[0][3] = Queen.new("white")
 	 	@state[0][5] = Bishop.new("white","white")
 	 	@state[0][6] = Knight.new("white")
 	 	@state[0][7] = Rook.new("white")
