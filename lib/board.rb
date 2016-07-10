@@ -20,7 +20,16 @@ class Board
 	end
 
 	 def initial_positions
-	 	@state[7][2] = Bishop.new("black","white" )
+	 	@state[7][0] = Rook.new("black")
+	 	@state[7][1] = Knight.new("black")
+	 	@state[7][2] = Bishop.new("black","white")
+	 	@state[7][3] = Queen.new("black")
+	 	@state[7][4] = King.new("black")
+	 	@state[7][5] = Bishop.new("black","black")
+	 	@state[7][6] = Knight.new("black")
+	 	@state[7][7] = Rook.new("black")
+	 	7.downto(0) { |square| @state[6][square] = Pawn.new("black")}
+	 	7.downto(0) { |square| @state[1][square] = Pawn.new("white")}
 	 	@state[0][0] = Rook.new("white")
 	 	@state[0][1] = Knight.new("white")
 	 	@state[0][2] = Bishop.new("white","black")
