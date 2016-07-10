@@ -19,8 +19,9 @@ describe 'Board' do
 			expect(@board.state[0].length).to eq(8)
 		end			
 
-		# it 'defaults each square on the board to contain a string of three spaces' do
-		# 	expect(@board.state[0][0]).to eq("   ")
-		# end			
+		 # it 'initializes board\'s first row with correct pieces' do
+		 # 	expect(@board.state[0][2]).to be_an_instance_of(Bishop)
+		 # 	expect(@board.state[0][0]).to be_an_instance_of(Rook)
+		 # end			
 	end
 end

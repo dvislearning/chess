@@ -1,12 +1,3 @@
-require 'colorize'
-
-class Board
-	attr_reader :state
-	def initialize
-		@state = []
-		make_columns
-	end
-
 	def make_columns
 		8.times { @state << [] }
 		@state.each { |row| 8.times { row << " R " } }
