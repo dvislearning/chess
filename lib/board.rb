@@ -25,6 +25,7 @@ class Board
 	 	@state[0][1] = Knight.new("white")
 	 	@state[0][2] = Bishop.new("white","black")
 	 	@state[0][3] = Queen.new("white")
+	 	@state[0][4] = King.new("white")
 	 	@state[0][5] = Bishop.new("white","white")
 	 	@state[0][6] = Knight.new("white")
 	 	@state[0][7] = Rook.new("white")
