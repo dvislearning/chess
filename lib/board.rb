@@ -1,6 +1,7 @@
 require 'colorize'
 require_relative 'bishop'
 require_relative 'rook'
+require_relative 'knight'
 
 class Board
 	attr_reader :state
