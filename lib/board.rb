@@ -57,5 +57,51 @@ class Board
 	end
 end
 
+
+# Used for debugging.  Can be given argument of array with 
+# location and pieces you want on the board.
+
+class DebugBoard < Board
+	def initialize
+		@state = []
+		make_columns
+	end
+
+	def letter_to_number(letter)
+		letter.capitalize.ord-65
+	end
+
+	def parse_piece(piece)
+		pieces = 
+		{:wpawn => Pawn.new("white"),
+		:wknight => Knight.new("white"),
+		:wbishop => Bishop.new("white", "normal"),
+		:wrook => Rook.new("white"),
+		:wqueen => Queen.new("white"),
+		:wking => King.new("white"),
+		:bpawn => Pawn.new("black"),
+		:bknight => Knight.new("black"),
+		:bbishop => Bishop.new("black", "normal"),
+		:brook => Rook.new("black"),
+		:bqueen => Queen.new("black"),
+		:bking => King.new("black")}
+		pieces[piece]
+	end
+
+	def place_piece(position, piece)
+		file = position[1].to_i - 1
+		rank = letter_to_number(position[0]).to_i
+		piece = parse_piece(piece)
+		@state[rank][file] = piece
+	end
+
+end
+
+
+
 #Bishop.new("white", "normal")
-Board.new.display_board
+# Board.new.display_board
+
+# a = DebugBoard.new
+# a.place_piece("D2", :bking)
+# a.display_board

@@ -48,3 +48,20 @@ describe 'Board' do
 		end				 		 			
 	end
 end
+
+describe 'DebugBoard' do
+	before :each do
+		@debug_board = DebugBoard.new
+	end
+
+	describe '#place_piece' do
+		it 'places pieces in their apporiate squares' do
+			@debug_board.place_piece("B6", :bking)
+			@debug_board.place_piece("F3", :wqueen)
+			@debug_board.place_piece("A8", :bpawn)
+			expect(@debug_board.state[1][5]).to be_an_instance_of(King)
+			expect(@debug_board.state[5][2]).to be_an_instance_of(Queen)
+			expect(@debug_board.state[0][7]).to be_an_instance_of(Pawn)
+		end
+	end
+end
