@@ -10,4 +10,8 @@ class Piece
 	def letter_to_number(letter)
 		letter.capitalize.ord-65
 	end
+
+	def square_empty?(square)
+		@state[square[0]][square[1]] == "  "
+	end		
 end		

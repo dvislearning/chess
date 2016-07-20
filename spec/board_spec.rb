@@ -47,6 +47,15 @@ describe 'Board' do
 		 	expect(@board.state[1].all?{ |piece| piece.class == Pawn}).to eq(true)
 		end				 		 			
 	end
+
+	# describe '#square_empty?' do
+	# 	it 'returns true when square is empty' do
+	# 		@debug_board = DebugBoard.new
+	# 		@debug_board.place_piece("A1", :bking)
+	# 		expect(@debug_board.square_empty?([7,5])).to eq(true)
+	# 		expect(@debug_board.square_empty?([0,0])).to eq(false)
+	# 	end		
+	# end		
 end
 
 describe 'DebugBoard' do

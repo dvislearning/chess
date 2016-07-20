@@ -95,13 +95,16 @@ class DebugBoard < Board
 		@state[rank][file] = piece
 	end
 
+	def conv_from_chess(square)
+		column = square[1].to_i - 1
+		row = letter_to_number(square[0])
+		[column,row]
+	end	
+
 end
 
 
-
-#Bishop.new("white", "normal")
-# Board.new.display_board
-
-# a = DebugBoard.new
-# a.place_piece("D2", :bking)
-# a.display_board
+ a = DebugBoard.new
+ a.display_board
+ puts a.conv_from_chess("B8").inspect
+ puts a.conv_from_chess("B4").inspect
