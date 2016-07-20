@@ -2,11 +2,12 @@ require 'spec_helper'
 require 'board'
 
 describe 'Board' do
-	before :each do
-		@board = Board.new
-	end
 
 	describe '#initialize' do
+		before :each do
+			@board = Board.new
+		end
+		
 		it 'creates an instance of Board when initiated' do
 			expect(@board).to be_an_instance_of(Board)
 		end
@@ -48,14 +49,20 @@ describe 'Board' do
 		end				 		 			
 	end
 
-	# describe '#square_empty?' do
-	# 	it 'returns true when square is empty' do
-	# 		@debug_board = DebugBoard.new
-	# 		@debug_board.place_piece("A1", :bking)
-	# 		expect(@debug_board.square_empty?([7,5])).to eq(true)
-	# 		expect(@debug_board.square_empty?([0,0])).to eq(false)
-	# 	end		
-	# end		
+	describe '#path_clear?' do
+		before :each do
+			@debug_board = DebugBoard.new
+		end
+		
+		it 'returns true if given path is unobstructed' do
+			expect(@debug_board.path_clear?([[4, 1], [5, 1], [6, 1], [7, 1]])).to eq(true)
+		end
+
+		it 'returns false if given path is obstructed' do
+			@debug_board.state[6][1] = Rook.new("white")
+			expect(@debug_board.path_clear?([[4, 1], [5, 1], [6, 1], [7, 1]])).to eq(false)
+		end		
+	end		
 end
 
 describe 'DebugBoard' do

@@ -55,6 +55,10 @@ class Board
 		end
 		puts "  A B C D E F G H"
 	end
+
+	def path_clear?(path)
+		path.all? { |square| @state[square[0]][square[1]] == "  "}
+	end	
 end
 
 
@@ -62,6 +66,7 @@ end
 # location and pieces you want on the board.
 
 class DebugBoard < Board
+	attr_reader :state
 	def initialize
 		@state = []
 		make_columns
@@ -104,7 +109,5 @@ class DebugBoard < Board
 end
 
 
- a = DebugBoard.new
- a.display_board
- puts a.conv_from_chess("B8").inspect
- puts a.conv_from_chess("B4").inspect
+#  a = DebugBoard.new
+# puts  a.path_clear?([[4, 1], [5, 1], [6, 1], [7, 1]]).inspect

@@ -44,20 +44,6 @@ describe 'Rook' do
 		end		
 	end
 
-	describe '#move_path' do
-		it 'returns array with path rook has to take vertically' do
-			@debug_board.place_piece("B8", :brook)
-			expect(@rook.move_path("B8", "B4")).to eql([[3, 1], [4, 1], [5, 1], [6, 1]])
-			expect(@rook.move_path("B4", "B8")).to eql([[4, 1], [5, 1], [6, 1], [7, 1]])
-		end
-
-		it 'returns array with path rook has to take horizontally' do
-			@debug_board.place_piece("C4", :brook)
-			expect(@rook.move_path("C4", "F4")).to eql([[3, 3], [3, 4], [3, 5]])
-			expect(@rook.move_path("F4", "C4")).to eql([[3, 2], [3, 3], [3, 4]])
-		end
-	end
-
 
 	# 	it 'returns false when rook\'s path is obstructed' do
 	# 		@debug_board.place_piece("A2", :brook)
