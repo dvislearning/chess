@@ -56,9 +56,20 @@ class Board
 		puts "  A B C D E F G H"
 	end
 
+
+
+	def square_empty?(square)
+		@state[square[0]][square[1]] == "  "
+	end	
+
 	def path_clear?(path)
 		path.all? { |square| @state[square[0]][square[1]] == "  "}
-	end	
+	end
+
+	def move_piece(beginning, destination)
+		@state[destination[0]][destination[1]] = @state[beginning[0]][beginning[1]]
+		@state[beginning[0]][beginning[1]] = "  "
+	end		
 end
 
 
@@ -97,7 +108,7 @@ class DebugBoard < Board
 		file = position[1].to_i - 1
 		rank = letter_to_number(position[0]).to_i
 		piece = parse_piece(piece)
-		@state[rank][file] = piece
+		@state[file][rank] = piece
 	end
 
 	def conv_from_chess(square)
@@ -109,5 +120,8 @@ class DebugBoard < Board
 end
 
 
-#  a = DebugBoard.new
-# puts  a.path_clear?([[4, 1], [5, 1], [6, 1], [7, 1]]).inspect
+a = DebugBoard.new
+a.place_piece("F4", :brook)
+a.display_board
+a.move_piece([3,5],[7,5])
+a.display_board

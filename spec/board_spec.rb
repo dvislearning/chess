@@ -62,7 +62,24 @@ describe 'Board' do
 			@debug_board.state[6][1] = Rook.new("white")
 			expect(@debug_board.path_clear?([[4, 1], [5, 1], [6, 1], [7, 1]])).to eq(false)
 		end		
-	end		
+	end
+
+	describe '#move_piece' do
+		before :each do
+			@debug_board = DebugBoard.new
+		end
+		
+		it 'returns true if given path is unobstructed' do
+			expect(@debug_board.path_clear?([[4, 1], [5, 1], [6, 1], [7, 1]])).to eq(true)
+		end
+
+		it 'returns false if given path is obstructed' do
+			@debug_board.state[3][5] = Rook.new("white")
+			@debug_board.move_piece([3,5],[7,5])
+			expect(@debug_board.state[7][5]).to be_an_instance_of(Rook)
+			expect(@debug_board.state[3][5]).to eq("  ")
+		end		
+	end			
 end
 
 describe 'DebugBoard' do
@@ -75,9 +92,9 @@ describe 'DebugBoard' do
 			@debug_board.place_piece("B6", :bking)
 			@debug_board.place_piece("F3", :wqueen)
 			@debug_board.place_piece("A8", :bpawn)
-			expect(@debug_board.state[1][5]).to be_an_instance_of(King)
-			expect(@debug_board.state[5][2]).to be_an_instance_of(Queen)
-			expect(@debug_board.state[0][7]).to be_an_instance_of(Pawn)
+			expect(@debug_board.state[5][1]).to be_an_instance_of(King)
+			expect(@debug_board.state[2][5]).to be_an_instance_of(Queen)
+			expect(@debug_board.state[7][0]).to be_an_instance_of(Pawn)
 		end
 	end
 end
