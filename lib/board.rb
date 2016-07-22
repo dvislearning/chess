@@ -22,20 +22,20 @@ class Board
 	 def initial_positions
 	 	@state[7][0] = Rook.new("black")
 	 	@state[7][1] = Knight.new("black")
-	 	@state[7][2] = Bishop.new("black","white")
+	 	@state[7][2] = Bishop.new("black")
 	 	@state[7][3] = Queen.new("black")
 	 	@state[7][4] = King.new("black")
-	 	@state[7][5] = Bishop.new("black","black")
+	 	@state[7][5] = Bishop.new("black")
 	 	@state[7][6] = Knight.new("black")
 	 	@state[7][7] = Rook.new("black")
 	 	7.downto(0) { |square| @state[6][square] = Pawn.new("black")}
 	 	7.downto(0) { |square| @state[1][square] = Pawn.new("white")}
 	 	@state[0][0] = Rook.new("white")
 	 	@state[0][1] = Knight.new("white")
-	 	@state[0][2] = Bishop.new("white","black")
+	 	@state[0][2] = Bishop.new("white")
 	 	@state[0][3] = Queen.new("white")
 	 	@state[0][4] = King.new("white")
-	 	@state[0][5] = Bishop.new("white","white")
+	 	@state[0][5] = Bishop.new("white")
 	 	@state[0][6] = Knight.new("white")
 	 	@state[0][7] = Rook.new("white")
 	 end
@@ -91,13 +91,13 @@ class DebugBoard < Board
 		pieces = 
 		{:wpawn => Pawn.new("white"),
 		:wknight => Knight.new("white"),
-		:wbishop => Bishop.new("white", "normal"),
+		:wbishop => Bishop.new("white"),
 		:wrook => Rook.new("white"),
 		:wqueen => Queen.new("white"),
 		:wking => King.new("white"),
 		:bpawn => Pawn.new("black"),
 		:bknight => Knight.new("black"),
-		:bbishop => Bishop.new("black", "normal"),
+		:bbishop => Bishop.new("black"),
 		:brook => Rook.new("black"),
 		:bqueen => Queen.new("black"),
 		:bking => King.new("black")}
@@ -117,11 +117,23 @@ class DebugBoard < Board
 		[column,row]
 	end	
 
+	def index_board
+		puts "  "
+		8.downto(1) do |row|
+			if row%2 == 0
+				puts ((row-1).to_s + " " + display_square(@state[row-1][0]).colorize(:background => :white) + display_square(@state[row-1][1]).colorize(:background => :light_blue)+ display_square(@state[row-1][2]).colorize(:background => :white) + display_square(@state[row-1][3]).colorize(:background => :light_blue) + display_square(@state[row-1][4]).colorize(:background => :white) + display_square(@state[row-1][5]).colorize(:background => :light_blue) + display_square(@state[row-1][6]).colorize(:background => :white) + display_square(@state[row-1][7]).colorize(:background => :light_blue))
+			else
+				puts ((row-1).to_s + " " + display_square(@state[row-1][0]).colorize(:background => :light_blue) + display_square(@state[row-1][1]).colorize(:background => :white)+ display_square(@state[row-1][2]).colorize(:background => :light_blue) + display_square(@state[row-1][3]).colorize(:background => :white) + display_square(@state[row-1][4]).colorize(:background => :light_blue) + display_square(@state[row-1][5]).colorize(:background => :white) + display_square(@state[row-1][6]).colorize(:background => :light_blue) + display_square(@state[row-1][7]).colorize(:background => :white))
+			end
+		end
+		puts "  0 1 2 3 4 5 6 7"
+	end	
+
 end
 
 
 a = DebugBoard.new
-a.place_piece("F4", :brook)
-a.display_board
-a.move_piece([3,5],[7,5])
-a.display_board
+a.place_piece("F4", :bbishop)
+a.index_board
+#a.move_piece([3,5],[7,5])
+#a.display_board
