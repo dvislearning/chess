@@ -133,7 +133,7 @@ end
 
 
 a = DebugBoard.new
-a.place_piece("F4", :bbishop)
+a.place_piece("D4", :bbishop)
 a.index_board
 #a.move_piece([3,5],[7,5])
 #a.display_board

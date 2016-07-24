@@ -75,6 +75,6 @@ class Bishop
 
 end
 
- a = Bishop.new("black")
- puts a.move_path([7,3], [5,6]).inspect
+ # a = Bishop.new("black")
+ # puts a.move_path([7,3], [5,6]).inspect
 
