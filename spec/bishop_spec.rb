@@ -66,7 +66,7 @@ describe 'Bishop' do
 	end	
 
 	describe '#move_path' do
-		it 'returns false when invalid bishop move is given as argument' do
+		it 'returns path when valid bishop move is given as argument' do
 			expect(@bishop.move_down_right([5,2], [2,5])).to eq([[4,3], [3,4], [2,5]])
 		end
 
