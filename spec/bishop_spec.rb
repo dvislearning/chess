@@ -64,4 +64,17 @@ describe 'Bishop' do
 			expect(@bishop.move_down_right([5,2], [1,2])).to eq(false)
 		end		
 	end	
+
+	describe '#move_path' do
+		it 'returns false when invalid bishop move is given as argument' do
+			expect(@bishop.move_down_right([5,2], [2,5])).to eq([[4,3], [3,4], [2,5]])
+		end
+
+		it 'returns false when bishop makes invalid down-right move' do
+			expect(@bishop.move_down_right([0,0], [0,1])).to eq(false)
+			expect(@bishop.move_down_right([0,1], [6,1])).to eq(false)
+			expect(@bishop.move_down_right([6,6], [1,0])).to eq(false)
+			expect(@bishop.move_down_right([3,5], [4,7])).to eq(false)
+		end		
+	end		
 end

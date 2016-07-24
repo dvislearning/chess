@@ -61,9 +61,20 @@ class Bishop
 		path << destination
 		path.delete(beginning)
 		path
-	end			
+	end	
+
+	def move_path(beginning, destination)
+		paths = Array.new
+		paths << move_up_right(beginning, destination)
+		paths << move_down_right(beginning, destination)
+		paths << move_up_left(beginning, destination)
+		paths << move_down_left(beginning, destination)
+		result = paths.find { |path| path != false }
+		result == nil ? false : result 
+	end
+
 end
 
-# a = Bishop.new("black")
-# puts a.move_up_right([4,2], [6,4]).inspect
+ a = Bishop.new("black")
+ puts a.move_path([7,3], [5,6]).inspect
 
