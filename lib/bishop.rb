@@ -1,8 +1,9 @@
 class Bishop
-	attr_reader :color, :symbol
+	attr_reader :color, :symbol, :type
 	attr_accessor :captured
 	def initialize (color)
 		@color = color
+		@type = "bishop"
 		@captured = false
 		assign_symbol 
 	end

@@ -1,8 +1,9 @@
 class Knight
-	attr_reader :color, :symbol
+	attr_reader :color, :symbol, :type
 	attr_accessor :captured
 	def initialize (color)
 		@color = color
+		@type = "knight"
 		@captured = false
 		assign_symbol 
 	end
@@ -22,5 +23,5 @@ class Knight
 end
 
 
-a = Knight.new("black")
-puts a.move_path([3,5], [1,4]).inspect
+# a = Knight.new("black")
+# puts a.move_path([3,5], [1,4]).inspect

@@ -1,8 +1,9 @@
 class King
-	attr_reader :color, :symbol
+	attr_reader :color, :symbol, :type
 	attr_accessor :captured
 	def initialize (color)
 		@color = color
+		@type = "king"
 		@captured = false
 		@moved = false
 		assign_symbol 
@@ -27,4 +28,4 @@ end
 #If he encounters a piece of the opposite color, heis in check.
 
 a = King.new("black")
-puts a.move_path([3,5], [5,5]).inspect
+# puts a.move_path([3,5], [5,5]).inspect

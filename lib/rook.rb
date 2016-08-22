@@ -1,10 +1,11 @@
 require_relative 'piece'
 
 class Rook < Piece
-	attr_reader :color, :symbol
+	attr_reader :color, :symbol, :type
 	attr_accessor :captured
 	def initialize (color)
 		@color = color
+		@type = "rook"
 		@captured = false
 		@moved = false
 		assign_symbol 
@@ -102,7 +103,7 @@ class Rook < Piece
 
 end
 
-   a = Rook.new("black")
+#   a = Rook.new("black")
 # puts a.move_up([3,5], [9,5]).inspect
 # puts a.move_path("E4", "B4").inspect
 # puts a.move_path("B6", "B3").inspect
