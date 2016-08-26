@@ -7,9 +7,6 @@ require_relative 'bishop'
 require_relative 'rook'
 require_relative 'player'
 
-# @board = Board.new
-@players ||= []
-
 
 def initialize_player_white
 	@players <<  Player.new("white")
@@ -111,6 +108,7 @@ def pawn_cant_move_two
 end
 
 def invalid_pawn_capture?(beg, path)
+ 	return false if @board.state[beg[0]][beg[1]].type != "pawn"
  	if @current_player.color == "white"
 	 	if ((beg[0]+1 == path.flatten[0]) && (beg[1]-1 == path.flatten[1])) || ((beg[0]+1 == path.flatten[0]) && (beg[1]+1 == path.flatten[1]))
 	 		@board.square_empty?(path.flatten) ? true : false
@@ -140,6 +138,102 @@ end
 
 def pawn_being_moved?(beg)
 	@board.state[beg[0]][beg[1]].type == "pawn"
+end
+
+# def moved_into_check?(dest, color)
+# 	@board.check_if_check(dest, color)
+# end
+
+# def moved_into_check?(beg, dest, color)
+# 	dupe = Marshal.load(Marshal.dump(@board.state))
+# 	dupe[5][0] = "M"
+# 	#dupe = "OoOoOo"
+# 	puts dupe.inspect
+# 	puts @board.state.inspect
+
+# # puts "dup_board -  #{dupe.object_id}"
+# # puts "@board.state -  #{@board.state.object_id}"
+
+# end
+
+
+ def moved_into_check?(beg, dest, color)
+ 	temp_board = TemporaryBoard.new
+ 	dupe = Marshal.load(Marshal.dump(@board.state))
+ 	
+  	dupe[dest[0]][dest[1]] = dupe[beg[0]][beg[1]]
+  	dupe[beg[0]][beg[1]] = "  "
+
+ 	temp_board.state = dupe
+ 	king_location = temp_board.find_king(color)
+ 	temp_board.check_if_check(king_location, color)
+
+
+
+############################THIS IS A COPY#######################
+
+
+ 	#  temp_board = TemporaryBoard.new
+ 	#  dupe = Marshal.load(Marshal.dump(@board.state))
+ 	# dupe[2][2] = Knight.new("white")
+ 	# temp_board.state = dupe
+ 	# #dupe[3][2] = dupe[2][2]
+ 	# #dupe[beg[0]][beg[1]] = "  "
+ 	#  # temp_board.state = dupe
+ 	#  # temp_board.display_board
+ 	#   @board.display_board
+ 	#  # puts dupe.inspect
+ 	#  temp_board.display_board
+ 	 #puts temp_board.state.inspect
+
+############################THIS IS A COPY#######################
+	 
+# 	# temp_board.display_board
+# 	 # dupe =  @board.state.dup
+# 	 # temp_board.state = dupe
+# 	  @board.place_piece("e1", :bpawn)
+# 	  @board.display_board
+# 	 # temp_board.display_board
+
+# 	#  puts ""
+# 	# # puts "dup_board -  #{dup_board.object_id}"
+# 	#  puts "@board.state -  #{@board.state.object_id}"
+# 	#  puts "temp_board.state - #{temp_board.state.object_id}"
+# 	#  puts ""
+	
+ # temp_board.state[dest[0]][dest[1]] = temp_board.state[beg[0]][beg[1]]
+ # temp_board.state[beg[0]][beg[1]] = "  "
+
+
+#  dupe[dest[0]][dest[1]] = dupe[beg[0]][beg[1]]
+#  dupe[beg[0]][beg[1]] = "  "
+
+# temp_board.state = dupe
+# temp_board.display_board
+# @board.display_board
+
+# 	#temp_board.state[beg[0]][beg[1]] = "  "
+
+# 	# puts ""
+# 	# puts "dup_board -  #{dup_board.object_id}"
+# 	# puts "@board.state -  #{@board.state.object_id}"
+# 	# puts "temp_board.state - #{temp_board.state.object_id}"
+# 	# puts ""
+# 	# # puts dup_board.inspect
+# 	# temp_board.state = dup_board
+# 	# puts ""
+# 	# puts "dup_board -  #{dup_board.object_id}"
+# 	# puts "@board.state -  #{@board.state.object_id}"
+# 	# puts "temp_board.state - #{temp_board.state.object_id}"
+# 	# puts ""	
+# @board.display_board
+# 	puts @board.state.inspect
+# 	# king_location = temp_board.find_king(color)
+# 	# temp_board.check_if_check(king_location, color)
+ end
+
+def move_into_check
+	puts "This move places your King in check.  Please make a different move."
 end
 
 def make_pawn_moved(beg)
@@ -174,37 +268,53 @@ def make_move
 		path = get_path(beg, dest)
 		(invalid_path(beg); redo) if path == false
 		# Pawn can move two spaces?
+		#kings are acting as pawns!
+		
 		(pawn_cant_move_two; redo) if invalid_two_move?(beg, path)
 		(pawn_cannot_capture; redo) if invalid_pawn_capture?(beg, path)
 		(player_cannot_land; redo) if (square_occupied?(dest) && player_same_color?(dest))
 		(path_not_clear; redo) unless path_clear?(path[0..-2])
+		(move_into_check; redo) if moved_into_check?(beg, dest, @current_player.color)
 		make_pawn_moved(beg) if pawn_being_moved?(beg)
 		move_piece(beg, dest)
-		#break
+		@current_player = @players.find { |player| player != @current_player }
 	end
 end
 
- initialize_player_white
- initialize_player_black
- @current_player = @players[1]
-# first_move
-
+@board = Board.new
+@players ||= []
+initialize_player_white
+initialize_player_black
+@current_player = @players[0]
+first_move
+make_move
 
 # loop do
 # 	prompt_move
 # 	break
 # end
 
-@board = DebugBoard.new
- @board.place_piece("c7", :bpawn)
- @board.place_piece("a1", :wrook)
- @board.display_board
+# @board = DebugBoard.new
+#  @board.place_piece("c1", :wking)
+#  @board.place_piece("d4", :bknight)
+#   @board.place_piece("b1", :wrook)
+#   @board.place_piece("d1", :bpawn)
+#   @board.place_piece("b3", :bknight)
+#   @board.place_piece("g6", :bknight)
+#  @board.display_board
 # @board.index_board
 #puts invalid_pawn_capture?([1,1], [2,0]).inspect
 #puts can_pawn_capture?([1,1], [2,0]).inspect
 # # puts beg_empty?([0,1]).inspect
 # puts @board.state[1][2].moved.inspect
- make_move
+# make_move
 # puts @board.state[3][2].moved.inspect
 # @board.display_board
 # puts proper_notation?("a1 b7").inspect
+ # make_move
+ # @board.display_board
+#@board.display_board
+# puts @board.state.class
+# puts moved_into_check?([1,2], [2,2], "white").inspect
+#puts moved_into_check?([0,2], [1,2], "white").inspect
+# puts @board.secret_code.inspect

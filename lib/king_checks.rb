@@ -111,7 +111,6 @@ class KingChecks
 	end
 
 # Knight checks
-
 	def move_knight(beginning)
 		beg = beginning
 		knight_moves = [[2,1], [1,2], [2,-1], [1,-2], [-2,-1], [-1,-2], [-2,1], [-1,2]]
@@ -122,8 +121,7 @@ class KingChecks
 		end
 		possible_moves
 	end
-
 end
 
-  a = KingChecks.new
- puts a.move_knight([6,0]).inspect
+ #  a = KingChecks.new
+ # puts a.move_knight([6,0]).inspect

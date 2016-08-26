@@ -14,8 +14,8 @@ class Board
 		@king_checks = KingChecks.new
 		make_columns
 		initial_positions
-		initial_white_king_pos
-		initial_black_king_pos
+		# initial_white_king_pos
+		# initial_black_king_pos
 	end
 
 
@@ -61,12 +61,29 @@ class Board
 		puts "  A B C D E F G H"
 	end
 
-	def initial_white_king_pos
-		@white_king_pos = [0,4]
-	end
+	# def initial_white_king_pos
+	# 	@white_king_pos = [0,4]
+	# end
 
-	def initial_black_king_pos
-		@black_king_pos = [7,4]
+	# def initial_black_king_pos
+	# 	@black_king_pos = [7,4]
+	# end
+
+	def find_king(color)
+		column_location = nil
+		row_location = nil
+		column = nil
+		@state.each do |array|
+			target_square = array.index{ |square| square != "  " && square.type == "king" && square.color == color }
+			unless target_square.nil?
+				column_location = target_square
+				column = array
+			end
+		end
+		row_location = @state.index do |array|
+			array == column
+		end
+		return [row_location, column_location]
 	end
 
 	def check_in_path_vert_hori?(path, color)
@@ -193,7 +210,7 @@ class Board
 	end		
 
 	def check_if_check(beg, color)
-		 return true if check_right(beg, color)
+		return true if check_right(beg, color)
 		return true if check_left(beg, color)
 		return true if check_up(beg, color)
 		return true if check_down(beg, color)
@@ -229,7 +246,22 @@ class Board
 	def move_piece(beginning, destination)
 		@state[destination[0]][destination[1]] = @state[beginning[0]][beginning[1]]
 		@state[beginning[0]][beginning[1]] = "  "
-	end		
+	end	
+
+	def plus_five
+		@state << 5
+	end
+
+end
+
+class TemporaryBoard < Board
+	attr_accessor :state
+	attr_reader :king_checks
+	def initialize
+		@state = []
+		@king_checks = KingChecks.new
+		make_columns
+	end
 end
 
 
@@ -237,10 +269,11 @@ end
 # location and pieces you want on the board.
 
 class DebugBoard < Board
-	attr_reader :state
+	attr_reader :state, :secret_code
 	def initialize
 		@state = []
 		@king_checks = KingChecks.new
+		@secret_code = "secret"
 		make_columns
 	end
 
@@ -292,21 +325,27 @@ class DebugBoard < Board
 end
 
 
- a = DebugBoard.new
- a.place_piece("D3", :wking)
-# a.place_piece("C3", :wknight)
-# a.place_piece("G6", :bbishop)
-a.place_piece("B2", :wknight)
-# a.place_piece("C2", :bpawn)
- a.place_piece("C2", :wpawn)
- a.place_piece("C4", :brook)
- #
-# a.place_piece("A3", :bking)
- #a.place_piece("D5", :wpawn)
-# a.place_piece("G3", :brook)
-#  a.place_piece("A3", :bqueen)
- a.index_board
-# a.move_piece([3,5],[7,5])
-# a.initial_positions
-# a.display_board
- puts a.check_if_check([2,3], "white").inspect
+#  a = DebugBoard.new
+#  a.place_piece("D3", :wking)
+#  a.place_piece("F5", :bking)
+# # a.place_piece("C3", :wknight)
+# # a.place_piece("G6", :bbishop)
+# #a.place_piece("B2", :wknight)
+# # a.place_piece("C2", :bpawn)
+# # a.place_piece("C2", :wpawn)
+#  a.place_piece("C4", :brook)
+# # a.place_piece("A3", :bking)
+#  #a.place_piece("D5", :wpawn)
+# # a.place_piece("G3", :brook)
+# #  a.place_piece("A3", :bqueen)
+#  a.index_board
+# # a.move_piece([3,5],[7,5])
+# # a.initial_positions
+# # a.display_board
+# # puts a.check_if_check([2,3], "white").inspect
+# puts a.find_king("black").inspect
+
+#  b = TemporaryBoard.new
+# # b.plus_five
+# # puts b.state.inspect
+# b.display_board
