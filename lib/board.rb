@@ -5,17 +5,15 @@ require_relative 'bishop'
 require_relative 'rook'
 require_relative 'queen'
 require_relative 'king'
-require_relative 'king_checks'
+ require_relative 'king_checks'
 
 class Board
-	attr_accessor :state, :white_king_pos, :black_king_pos
+	attr_accessor :state, :king_checks
 	def initialize
 		@state = []
 		@king_checks = KingChecks.new
 		make_columns
 		initial_positions
-		# initial_white_king_pos
-		# initial_black_king_pos
 	end
 
 
@@ -26,23 +24,39 @@ class Board
 
 	 def initial_positions
 	 	@state[7][0] = Rook.new("black")
+	 	@state[7][0].move_history << [7,0]
 	 	@state[7][1] = Knight.new("black")
+	 	@state[7][1].move_history << [7,1]
 	 	@state[7][2] = Bishop.new("black")
+	 	@state[7][2].move_history << [7,2]
 	 	@state[7][3] = Queen.new("black")
+	 	@state[7][3].move_history << [7,3]
 	 	@state[7][4] = King.new("black")
+	 	@state[7][4].move_history << [7,4]
 	 	@state[7][5] = Bishop.new("black")
+	 	@state[7][5].move_history << [7,5]
 	 	@state[7][6] = Knight.new("black")
+	 	@state[7][6].move_history << [7,6]
 	 	@state[7][7] = Rook.new("black")
-	 	7.downto(0) { |square| @state[6][square] = Pawn.new("black")}
-	 	7.downto(0) { |square| @state[1][square] = Pawn.new("white")}
+	 	@state[7][7].move_history << [7,7]
+	 	7.downto(0) { |square| @state[6][square] = Pawn.new("black"); @state[6][square].move_history << [6, square] }
+	 	7.downto(0) { |square| @state[1][square] = Pawn.new("white"); @state[1][square].move_history << [1, square] }
 	 	@state[0][0] = Rook.new("white")
+	 	@state[0][0].move_history << [0,0]
 	 	@state[0][1] = Knight.new("white")
+	 	@state[0][1].move_history << [0,1]
 	 	@state[0][2] = Bishop.new("white")
+	 	@state[0][2].move_history << [0,2]
 	 	@state[0][3] = Queen.new("white")
+	 	@state[0][3].move_history << [0,3]
 	 	@state[0][4] = King.new("white")
+	 	@state[0][4].move_history << [0,4]
 	 	@state[0][5] = Bishop.new("white")
+	 	@state[0][5].move_history << [0,5]
 	 	@state[0][6] = Knight.new("white")
+	 	@state[0][6].move_history << [0,6]
 	 	@state[0][7] = Rook.new("white")
+	 	@state[0][7].move_history << [0,7]
 	 end
 
 	def display_square(content)
@@ -60,14 +74,6 @@ class Board
 		end
 		puts "  A B C D E F G H"
 	end
-
-	# def initial_white_king_pos
-	# 	@white_king_pos = [0,4]
-	# end
-
-	# def initial_black_king_pos
-	# 	@black_king_pos = [7,4]
-	# end
 
 	def find_king(color)
 		column_location = nil
@@ -90,7 +96,7 @@ class Board
 		path.each do |position| 
 			square = @state[position[0]][position[1]]
 			next if square != "  " && square.color == color && square.type == "king"
-			return true if square != "  " &&
+			@king_checks.check_path = path; return true if square != "  " &&
 			square.color != color &&
 			(square.type == "queen" || square.type == "rook" || square.type == "king")			
 			return false if (square != "  " && 
@@ -103,7 +109,7 @@ class Board
 		path.each do |position| 
 			square = @state[position[0]][position[1]]
 			next if square != "  " && square.color == color && square.type == "king"
-			return true if square != "  " &&
+			@king_checks.check_path = path; return true if square != "  " &&
 			square.color != color &&
 			(square.type == "queen" || square.type == "bishop" || square.type == "king")			
 			return false if (square != "  " && 
@@ -116,7 +122,7 @@ class Board
 		path.each do |position| 
 			square = @state[position[0]][position[1]]
 			next if square != "  " && square.color == color && square.type == "king"
-			return true if square != "  " &&
+			@king_checks.check_path = path; return true if square != "  " &&
 			square.color != color &&
 			(square.type == "pawn")
 		end
@@ -127,7 +133,7 @@ class Board
 		path.each do |position| 
 			square = @state[position[0]][position[1]]
 			next if square != "  " && square.color == color && square.type == "king"
-			return true if square != "  " &&
+			@king_checks.check_path = path; return true if square != "  " &&
 			square.color != color &&
 			(square.type == "knight")
 		end
@@ -244,6 +250,7 @@ class Board
 	end
 
 	def move_piece(beginning, destination)
+		@state[beginning[0]][beginning[1]].move_history << [destination[0], destination[1]]
 		@state[destination[0]][destination[1]] = @state[beginning[0]][beginning[1]]
 		@state[beginning[0]][beginning[1]] = "  "
 	end	
@@ -269,11 +276,10 @@ end
 # location and pieces you want on the board.
 
 class DebugBoard < Board
-	attr_reader :state, :secret_code
+	attr_reader :state, :king_checks
 	def initialize
 		@state = []
 		@king_checks = KingChecks.new
-		@secret_code = "secret"
 		make_columns
 	end
 
@@ -303,6 +309,7 @@ class DebugBoard < Board
 		rank = letter_to_number(position[0]).to_i
 		piece = parse_piece(piece)
 		@state[file][rank] = piece
+		@state[file][rank].move_history << [file, rank]
 	end
 
 	def conv_from_chess(square)
@@ -323,29 +330,3 @@ class DebugBoard < Board
 		puts "  0 1 2 3 4 5 6 7"
 	end	
 end
-
-
-#  a = DebugBoard.new
-#  a.place_piece("D3", :wking)
-#  a.place_piece("F5", :bking)
-# # a.place_piece("C3", :wknight)
-# # a.place_piece("G6", :bbishop)
-# #a.place_piece("B2", :wknight)
-# # a.place_piece("C2", :bpawn)
-# # a.place_piece("C2", :wpawn)
-#  a.place_piece("C4", :brook)
-# # a.place_piece("A3", :bking)
-#  #a.place_piece("D5", :wpawn)
-# # a.place_piece("G3", :brook)
-# #  a.place_piece("A3", :bqueen)
-#  a.index_board
-# # a.move_piece([3,5],[7,5])
-# # a.initial_positions
-# # a.display_board
-# # puts a.check_if_check([2,3], "white").inspect
-# puts a.find_king("black").inspect
-
-#  b = TemporaryBoard.new
-# # b.plus_five
-# # puts b.state.inspect
-# b.display_board

@@ -1,11 +1,11 @@
-require_relative 'board'
-require_relative 'pawn'
-require_relative 'king'
-require_relative 'queen'
-require_relative 'knight'
-require_relative 'bishop'
-require_relative 'rook'
-require_relative 'player'
+ require_relative 'board'
+# require_relative 'pawn'
+# require_relative 'king'
+# require_relative 'queen'
+# require_relative 'knight'
+# require_relative 'bishop'
+# require_relative 'rook'
+ require_relative 'player'
 
 
 def initialize_player_white
@@ -50,14 +50,6 @@ def conv_from_chess(square)
 	row = letter_to_number(square[0])
 	[column,row]
 end
-
-# def convert_square_1(entry)
-# 	conv_from_chess(entry[0]+entry[1])
-# end
-
-# def convert_square_2(entry)
-# 	conv_from_chess(entry[3]+entry[4])
-# end
 
 def square_occupied?(square)
 	!@board.square_empty?(square)
@@ -140,22 +132,7 @@ def pawn_being_moved?(beg)
 	@board.state[beg[0]][beg[1]].type == "pawn"
 end
 
-# def moved_into_check?(dest, color)
-# 	@board.check_if_check(dest, color)
-# end
-
-# def moved_into_check?(beg, dest, color)
-# 	dupe = Marshal.load(Marshal.dump(@board.state))
-# 	dupe[5][0] = "M"
-# 	#dupe = "OoOoOo"
-# 	puts dupe.inspect
-# 	puts @board.state.inspect
-
-# # puts "dup_board -  #{dupe.object_id}"
-# # puts "@board.state -  #{@board.state.object_id}"
-
-# end
-
+#Checks to see if a move places current_player's King in check
 
  def moved_into_check?(beg, dest, color)
  	temp_board = TemporaryBoard.new
@@ -167,73 +144,22 @@ end
  	temp_board.state = dupe
  	king_location = temp_board.find_king(color)
  	temp_board.check_if_check(king_location, color)
-
-
-
-############################THIS IS A COPY#######################
-
-
- 	#  temp_board = TemporaryBoard.new
- 	#  dupe = Marshal.load(Marshal.dump(@board.state))
- 	# dupe[2][2] = Knight.new("white")
- 	# temp_board.state = dupe
- 	# #dupe[3][2] = dupe[2][2]
- 	# #dupe[beg[0]][beg[1]] = "  "
- 	#  # temp_board.state = dupe
- 	#  # temp_board.display_board
- 	#   @board.display_board
- 	#  # puts dupe.inspect
- 	#  temp_board.display_board
- 	 #puts temp_board.state.inspect
-
-############################THIS IS A COPY#######################
-	 
-# 	# temp_board.display_board
-# 	 # dupe =  @board.state.dup
-# 	 # temp_board.state = dupe
-# 	  @board.place_piece("e1", :bpawn)
-# 	  @board.display_board
-# 	 # temp_board.display_board
-
-# 	#  puts ""
-# 	# # puts "dup_board -  #{dup_board.object_id}"
-# 	#  puts "@board.state -  #{@board.state.object_id}"
-# 	#  puts "temp_board.state - #{temp_board.state.object_id}"
-# 	#  puts ""
-	
- # temp_board.state[dest[0]][dest[1]] = temp_board.state[beg[0]][beg[1]]
- # temp_board.state[beg[0]][beg[1]] = "  "
-
-
-#  dupe[dest[0]][dest[1]] = dupe[beg[0]][beg[1]]
-#  dupe[beg[0]][beg[1]] = "  "
-
-# temp_board.state = dupe
-# temp_board.display_board
-# @board.display_board
-
-# 	#temp_board.state[beg[0]][beg[1]] = "  "
-
-# 	# puts ""
-# 	# puts "dup_board -  #{dup_board.object_id}"
-# 	# puts "@board.state -  #{@board.state.object_id}"
-# 	# puts "temp_board.state - #{temp_board.state.object_id}"
-# 	# puts ""
-# 	# # puts dup_board.inspect
-# 	# temp_board.state = dup_board
-# 	# puts ""
-# 	# puts "dup_board -  #{dup_board.object_id}"
-# 	# puts "@board.state -  #{@board.state.object_id}"
-# 	# puts "temp_board.state - #{temp_board.state.object_id}"
-# 	# puts ""	
-# @board.display_board
-# 	puts @board.state.inspect
-# 	# king_location = temp_board.find_king(color)
-# 	# temp_board.check_if_check(king_location, color)
  end
 
 def move_into_check
 	puts "This move places your King in check.  Please make a different move."
+end
+
+def player_in_check
+	puts "Check! - #{@current_player.color.upcase}, you are in check!"
+end
+
+def player_checkmate
+	puts "Checkmate! #{@current_player.color.upcase} has been checkmated!"
+end
+
+def declare_draw
+	puts "This contest is a draw!"
 end
 
 def make_pawn_moved(beg)
@@ -244,19 +170,60 @@ def move_piece(beg, dest)
 	@board.move_piece(beg, dest)
 end
 
-# def make_move
-# 	loop do
-# 		entry = prompt_move
-# 		#improper_notation; redo unless proper_notation?(entry)
-# 		a = proper_notation?(entry)
-# 		#not_within_range; redo unless within_range?(entry)
-# 		return a
-# 		break
-# 	end
-# end
+# The following methods are used to see if checkmate has occured.
+
+def not_within_hypothetical_range?(dest)
+	(dest[0] < 0 || dest[1] < 0) || (dest[0] > 7 || dest[1] > 7)
+end
 
 
-def make_move
+def hypothetical_legal_move?(beg, dest)
+	return false if not_within_hypothetical_range?(dest)
+	path = get_path(beg, dest)
+	return false unless get_path(beg, dest)
+	return false if invalid_two_move?(beg, path)
+	return false if invalid_pawn_capture?(beg, path)
+	return false unless path_clear?(path[0..-2])
+	return false if (square_occupied?(dest) && player_same_color?(dest))
+	return false if moved_into_check?(beg, dest, @current_player.color)
+	true	
+end
+
+def find_player_pieces(color)
+	player_pieces = []
+	0.upto(7) do |col|
+		0.upto(7) do |row| 
+			if @board.state[col][row] != "  " &&  @board.state[col][row].color == color
+			player_pieces << @board.state[col][row]
+			end
+		end
+	end
+	player_pieces
+end
+
+def can_king_flee?(color)
+	king_loc = @board.find_king(color)
+	king = @board.state[king_loc[0]][king_loc[1]]
+	possible_moves = king.generate_path(king_loc)
+	possible_moves.each { |move| return true if hypothetical_legal_move?(king_loc, move)}
+	false
+end
+
+def checkmate?
+	return false if can_king_flee?(@current_player.color)
+ 	player_pieces = find_player_pieces(@current_player.color)
+ 	possible_rescue = Array.new
+ 	player_pieces.each do |piece|
+ 	 	piece_location = piece.move_history.pop
+		@board.king_checks.check_path.each do |square|
+		 	# puts "[#{piece_location}, #{square}] - #{hypothetical_legal_move?(piece_location, square).inspect}"
+		 	possible_rescue << hypothetical_legal_move?(piece_location, square)
+		end
+ 	end
+ 	possible_rescue.all? { |possibilities| possibilities == false }
+ end
+
+def play_game
 	loop do
 		entry = prompt_move
 		(improper_notation; redo) unless proper_notation?(entry)
@@ -267,9 +234,6 @@ def make_move
 		(player_cannot_move; redo) unless player_same_color?(beg)
 		path = get_path(beg, dest)
 		(invalid_path(beg); redo) if path == false
-		# Pawn can move two spaces?
-		#kings are acting as pawns!
-		
 		(pawn_cant_move_two; redo) if invalid_two_move?(beg, path)
 		(pawn_cannot_capture; redo) if invalid_pawn_capture?(beg, path)
 		(player_cannot_land; redo) if (square_occupied?(dest) && player_same_color?(dest))
@@ -277,7 +241,16 @@ def make_move
 		(move_into_check; redo) if moved_into_check?(beg, dest, @current_player.color)
 		make_pawn_moved(beg) if pawn_being_moved?(beg)
 		move_piece(beg, dest)
+		@board.state[dest[0]][dest[1]].move_history << dest
+		@board.display_board
 		@current_player = @players.find { |player| player != @current_player }
+		if @board.check_if_check(@board.find_king(@current_player.color), @current_player.color)
+			if checkmate?
+				player_checkmate
+				exit
+			end
+			player_in_check
+		end
 	end
 end
 
@@ -286,35 +259,60 @@ end
 initialize_player_white
 initialize_player_black
 @current_player = @players[0]
+@board.display_board
 first_move
-make_move
-
-# loop do
-# 	prompt_move
-# 	break
-# end
+# player_pieces = find_player_pieces("white")
+# player_pieces.each {|piece| puts piece.move_history.inspect}
+ play_game
 
 # @board = DebugBoard.new
-#  @board.place_piece("c1", :wking)
-#  @board.place_piece("d4", :bknight)
-#   @board.place_piece("b1", :wrook)
-#   @board.place_piece("d1", :bpawn)
-#   @board.place_piece("b3", :bknight)
-#   @board.place_piece("g6", :bknight)
-#  @board.display_board
-# @board.index_board
-#puts invalid_pawn_capture?([1,1], [2,0]).inspect
-#puts can_pawn_capture?([1,1], [2,0]).inspect
-# # puts beg_empty?([0,1]).inspect
-# puts @board.state[1][2].moved.inspect
-# make_move
-# puts @board.state[3][2].moved.inspect
+# @players ||= []
+# initialize_player_white
+# initialize_player_black
+# @current_player = @players[0]
+# @board.place_piece("A8", :brook)
+# @board.place_piece("B8", :bknight)
+# @board.place_piece("C8", :bbishop)
+# @board.place_piece("D8", :bqueen)
+# @board.place_piece("E8", :bking)
+# @board.place_piece("F8", :bbishop)
+# @board.place_piece("G8", :bknight)
+# @board.place_piece("A7", :bpawn)
+# @board.place_piece("B7", :bpawn)
+# @board.place_piece("C7", :bpawn)
+# @board.place_piece("D7", :bpawn)
+# @board.place_piece("E7", :bpawn)
+# #@board.place_piece("F6", :bpawn)
+# @board.place_piece("G7", :bpawn)
+# #@board.place_piece("G6", :wbishop)
+# @board.place_piece("H5", :wbishop)
+
+# @board.place_piece("A1", :wrook)
+# @board.place_piece("B1", :wknight)
+# @board.place_piece("C1", :wbishop)
+# @board.place_piece("D1", :wqueen)
+# @board.place_piece("E1", :wking)
+# @board.place_piece("G1", :wknight)
+# @board.place_piece("H1", :wrook)
+
+
+# @board.place_piece("A2", :wpawn)
+# @board.place_piece("B2", :wpawn)
+# @board.place_piece("C2", :wpawn)
+# @board.place_piece("D2", :wpawn)
+# @board.place_piece("E2", :wbishop)
+# @board.place_piece("E4", :wpawn)
+# @board.place_piece("F2", :wpawn)
+# @board.place_piece("G2", :wpawn)
+# @board.place_piece("H2", :wpawn)
+
+# @board.check_if_check([0, 0], "white")
 # @board.display_board
-# puts proper_notation?("a1 b7").inspect
- # make_move
- # @board.display_board
-#@board.display_board
-# puts @board.state.class
-# puts moved_into_check?([1,2], [2,2], "white").inspect
-#puts moved_into_check?([0,2], [1,2], "white").inspect
-# puts @board.secret_code.inspect
+# # first_move
+#  play_game
+# #puts @board.check_if_check(@board.find_king(@current_player.color), @current_player.color).inspect
+# #puts hypothetical_legal_move?().inspect
+# #puts checkmate?.inspect
+
+# # player_pieces = find_player_pieces(@current_player.color)
+# # player_pieces.each {|square| puts square.move_history.inspect}

@@ -1,10 +1,11 @@
 class Queen
 	attr_reader :color, :symbol, :type
-	attr_accessor :captured
+	attr_accessor :captured, :move_history
 	def initialize (color)
 		@color = color
 		@type = "queen"
 		@captured = false
+		@move_history = []
 		assign_symbol 
 	end
 

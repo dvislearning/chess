@@ -1,10 +1,12 @@
+
 class Bishop
 	attr_reader :color, :symbol, :type
-	attr_accessor :captured
+	attr_accessor :captured, :move_history
 	def initialize (color)
 		@color = color
 		@type = "bishop"
 		@captured = false
+		@move_history = []
 		assign_symbol 
 	end
 
@@ -76,6 +78,7 @@ class Bishop
 
 end
 
- # a = Bishop.new("black")
- # puts a.move_path([7,3], [5,6]).inspect
+ #  a = Bishop.new("black")
+ # # puts a.move_path([7,3], [5,6]).inspect
+ # puts a.move_history
 

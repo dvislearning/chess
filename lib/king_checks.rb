@@ -1,4 +1,11 @@
+#This class is used to test whether the king is being checked.
+#It contains all the possible ways a King can be in check 
+
 class KingChecks
+	attr_accessor :check_path
+	def initialize
+		@check_path = []
+	end	
 # Vertical and Horizontal checks
 
 	def move_right(beginning)
@@ -122,6 +129,3 @@ class KingChecks
 		possible_moves
 	end
 end
-
- #  a = KingChecks.new
- # puts a.move_knight([6,0]).inspect

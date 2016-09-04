@@ -1,43 +1,20 @@
-require_relative 'piece'
 
-class Rook < Piece
+
+class Rook
 	attr_reader :color, :symbol, :type
-	attr_accessor :captured
+	attr_accessor :captured, :move_history
 	def initialize (color)
 		@color = color
 		@type = "rook"
 		@captured = false
 		@moved = false
+		@move_history = []
 		assign_symbol 
 	end
 
 	def assign_symbol
 		@symbol = @color == "white" ? "\u{2656} " : "\u{265C} "
 	end 
-
-#Variables curr and dest are temporary.  Combine into the larger function 
-#that will contain them later when you write them 
-
-	# def valid_path?(current, destination)
-	# 	curr = conv_from_chess(current)
-	# 	dest = conv_from_chess(destination)
-	# 	(curr[0] == dest[0]) || (curr[1] == dest[1])
-	# end
-
-	# def move_path(current, destination)
-	# 	curr = conv_from_chess(current)
-	# 	dest = conv_from_chess(destination)
-	# 	path_container = []
-	# 	 if (curr[0] == dest[0]) # Same Row
-	# 	 	min_max = [curr[1], dest[1]].minmax
-	# 		min_max[0].upto(min_max[1]) { |num|  path_container << [curr[0], num]}
-	# 	 else # Same Column
-	# 	 	min_max = [curr[0], dest[0]].minmax
-	# 	 	min_max[0].upto(min_max[1]) { |num|  path_container << [num, curr[1]]}
-	# 	 end
-	# 	 path_container.delete(curr)
-	# 	 path_container
-	# end	
 
 	def move_right(beginning, destination)
 		beg = beginning
@@ -102,10 +79,3 @@ class Rook < Piece
 	end
 
 end
-
-#   a = Rook.new("black")
-# puts a.move_up([3,5], [9,5]).inspect
-# puts a.move_path("E4", "B4").inspect
-# puts a.move_path("B6", "B3").inspect
-# puts a.move_path("B8", "B4").inspect
-# # temp_array[1]..temp_array[-1].all? { |square| square }
