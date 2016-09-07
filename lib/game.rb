@@ -1,10 +1,4 @@
  require_relative 'board'
-# require_relative 'pawn'
-# require_relative 'king'
-# require_relative 'queen'
-# require_relative 'knight'
-# require_relative 'bishop'
-# require_relative 'rook'
  require_relative 'player'
 
 
@@ -95,6 +89,23 @@ def invalid_two_move?(beg, path)
  	end	 	
 end
 
+def improper_pawn_forward?(beg, dest)
+	if @board.state[beg[0]][beg[1]].color == "white"
+		if (dest == [beg[0] + 1, beg[1]]) || (dest == [beg[0] + 2, beg[1]])
+			return true if (square_occupied?([beg[0] + 1, beg[1]]) || square_occupied?([beg[0] + 2, beg[1]]))
+		end
+	else
+		if (dest == [beg[0] - 1, beg[1]]) || (dest == [beg[0] - 2, beg[1]])
+			return true if (square_occupied?([beg[0] - 1, beg[1]]) || square_occupied?([beg[0] - 2, beg[1]]))
+		end	
+	end
+	false
+end
+
+def improper_pawn_forward
+	puts "Pawns cannot do that"
+end
+
 def pawn_cant_move_two
 	puts "A Pawn may only move two spaces on its first move."
 end
@@ -182,6 +193,7 @@ def hypothetical_legal_move?(beg, dest)
 	path = get_path(beg, dest)
 	return false unless get_path(beg, dest)
 	return false if invalid_two_move?(beg, path)
+	return false if improper_pawn_forward?(beg, dest)
 	return false if invalid_pawn_capture?(beg, path)
 	return false unless path_clear?(path[0..-2])
 	return false if (square_occupied?(dest) && player_same_color?(dest))
@@ -235,6 +247,7 @@ def play_game
 		path = get_path(beg, dest)
 		(invalid_path(beg); redo) if path == false
 		(pawn_cant_move_two; redo) if invalid_two_move?(beg, path)
+		(improper_pawn_forward; redo) if improper_pawn_forward?(beg, dest)
 		(pawn_cannot_capture; redo) if invalid_pawn_capture?(beg, path)
 		(player_cannot_land; redo) if (square_occupied?(dest) && player_same_color?(dest))
 		(path_not_clear; redo) unless path_clear?(path[0..-2])
@@ -261,9 +274,20 @@ initialize_player_black
 @current_player = @players[0]
 @board.display_board
 first_move
-# player_pieces = find_player_pieces("white")
-# player_pieces.each {|piece| puts piece.move_history.inspect}
- play_game
+play_game
+
+#  @board = DebugBoard.new
+#  @board.place_piece("A3", :bking)
+#  @board.place_piece("C2", :wking)
+#  @board.place_piece("E4", :wpawn)
+#  @board.place_piece("E5", :bpawn)
+#  @players ||= []
+#  initialize_player_white
+#  initialize_player_black
+#  @current_player = @players[0]
+#  @board.display_board
+# # first_move
+#  play_game
 
 # @board = DebugBoard.new
 # @players ||= []

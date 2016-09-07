@@ -47,5 +47,4 @@ class Pawn
 			move_black(beginning, destination)
 		end
 	end
-
 end

@@ -19,8 +19,7 @@ class King
 		possible_moves = Array.new
 		king_moves.map { |move| possible_moves << [(beg[0]+move[0]), (beg[1]+move[1])] }
 		possible_moves
-	end
-		
+	end		
 
 	def move_path(beginning, destination)
 		piece_path = generate_path(beginning)

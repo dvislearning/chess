@@ -77,5 +77,4 @@ class Rook
 		result = paths.find { |path| path != false }
 		result == nil ? false : result 
 	end
-
 end

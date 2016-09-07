@@ -1,5 +1,14 @@
 #This class is used to test whether the king is being checked.
-#It contains all the possible ways a King can be in check 
+#It contains all the possible ways a King can be in check
+
+# The #check_if_check method, in the Board class, works by taking the
+# King location and color as an argument.  It then checks each of
+# the KingChecks methods below, starting from the location
+# of the king and sees if a valid piece of the opposing color is 
+# checking it.  
+
+# For example, it will check if a rook or queen is on top of king 
+# using the #move_up method, starting from the location of the king.
 
 class KingChecks
 	attr_accessor :check_path
@@ -118,6 +127,7 @@ class KingChecks
 	end
 
 # Knight checks
+
 	def move_knight(beginning)
 		beg = beginning
 		knight_moves = [[2,1], [1,2], [2,-1], [1,-2], [-2,-1], [-1,-2], [-2,1], [-1,2]]

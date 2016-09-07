@@ -75,10 +75,4 @@ class Bishop
 		result = paths.find { |path| path != false }
 		result == nil ? false : result 
 	end
-
 end
-
- #  a = Bishop.new("black")
- # # puts a.move_path([7,3], [5,6]).inspect
- # puts a.move_history
-

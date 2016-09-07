@@ -5,7 +5,7 @@ require_relative 'bishop'
 require_relative 'rook'
 require_relative 'queen'
 require_relative 'king'
- require_relative 'king_checks'
+require_relative 'king_checks'
 
 class Board
 	attr_accessor :state, :king_checks
@@ -75,6 +75,10 @@ class Board
 		puts "  A B C D E F G H"
 	end
 
+	def get_king_position(color)
+		color == "white" ? white_king_pos : black_king_pos
+	end
+
 	def find_king(color)
 		column_location = nil
 		row_location = nil
@@ -92,26 +96,32 @@ class Board
 		return [row_location, column_location]
 	end
 
-	def check_in_path_vert_hori?(path, color)
-		path.each do |position| 
+	def check_in_path_vert_hori?(path, one_over, color)
+		path.each do |position|
 			square = @state[position[0]][position[1]]
 			next if square != "  " && square.color == color && square.type == "king"
 			@king_checks.check_path = path; return true if square != "  " &&
 			square.color != color &&
-			(square.type == "queen" || square.type == "rook" || square.type == "king")			
+			(square.type == "queen" || square.type == "rook")			
+			if position == one_over
+				return true if square != "  " && square.color != color && square.type == "king"
+			end
 			return false if (square != "  " && 
 			(square.type != "king" || square.type != "queen" || square.type != "rook"))
 		end
 		false
 	end
 
-	def check_in_path_diag?(path, color)
+	def check_in_path_diag?(path, one_over, color)
 		path.each do |position| 
 			square = @state[position[0]][position[1]]
 			next if square != "  " && square.color == color && square.type == "king"
 			@king_checks.check_path = path; return true if square != "  " &&
 			square.color != color &&
-			(square.type == "queen" || square.type == "bishop" || square.type == "king")			
+			(square.type == "queen" || square.type == "bishop")			
+			if position == one_over
+				return true if square != "  " && square.color != color && square.type == "king"
+			end			
 			return false if (square != "  " && 
 			(square.type != "king" || square.type != "queen" || square.type != "rook"))
 		end
@@ -142,52 +152,50 @@ class Board
 
 	def check_right(beg, color)
 		path = @king_checks.move_right(beg)
-		check_in_path_vert_hori?(path, color)
+		one_over = beg[1] == 7 ? [] : [beg[0],beg[1] + 1]
+		check_in_path_vert_hori?(path, one_over, color)
 	end
 
 	def check_left(beg, color)
 		path = @king_checks.move_left(beg)
-		check_in_path_vert_hori?(path, color)
+		one_over = beg[1] == 0 ? [] : [beg[0],beg[1] - 1]
+		check_in_path_vert_hori?(path, one_over, color)
 	end	
 
 	def check_up(beg, color)
 		path = @king_checks.move_up(beg)
-		check_in_path_vert_hori?(path, color)
+		one_over = beg[0] == 7 ? [] : [beg[0] + 1,beg[1]]
+		check_in_path_vert_hori?(path, one_over, color)
 	end	
 
 	def check_down(beg, color)
 		path = @king_checks.move_down(beg)
-		check_in_path_vert_hori?(path, color)
+		one_over = beg[1] == 0 ? [] : [beg[0] - 1,beg[1]]
+		check_in_path_vert_hori?(path, one_over, color)
 	end	
 
 	def check_up_right(beg, color)
 		path = @king_checks.move_up_right(beg)
-		check_in_path_diag?(path, color)
+		one_over = (beg[0] == 7 || beg[1] == 7) ? [] : [beg[0] + 1,beg[1] + 1]
+		check_in_path_diag?(path, one_over, color)
 	end
 
 	def check_up_left(beg, color)
 		path = @king_checks.move_up_left(beg)
-		check_in_path_diag?(path, color)
+		one_over = (beg[0] == 7 || beg[1] == 0) ? [] : [beg[0] + 1,beg[1] - 1]		
+		check_in_path_diag?(path, one_over, color)
 	end	
 
 	def check_down_right(beg, color)
 		path = @king_checks.move_down_right(beg)
-		check_in_path_diag?(path, color)
+		one_over = (beg[0] == 0 || beg[1] == 7) ? [] : [beg[0] - 1,beg[1] + 1]		
+		check_in_path_diag?(path, one_over, color)
 	end	
 
 	def check_down_left(beg, color)
 		path = @king_checks.move_down_left(beg)
-		check_in_path_diag?(path, color)
-	end
-
-	def check_down_left(beg, color)
-		path = @king_checks.move_down_left(beg)
-		check_in_path_diag?(path, color)
-	end
-
-	def check_down_left(beg, color)
-		path = @king_checks.move_down_left(beg)
-		check_in_path_diag?(path, color)
+		one_over = (beg[0] == 0 || beg[1] == 0) ? [] : [beg[0] - 1,beg[1] - 1]		
+		check_in_path_diag?(path, one_over, color)
 	end
 
 	def check_pawn_down_left(beg, color)
@@ -236,11 +244,6 @@ class Board
 		false
 	end
 
-
-	def get_king_position(color)
-		color == "white" ? white_king_pos : black_king_pos
-	end
-
 	def square_empty?(square)
 		@state[square[0]][square[1]] == "  "
 	end	
@@ -254,11 +257,6 @@ class Board
 		@state[destination[0]][destination[1]] = @state[beginning[0]][beginning[1]]
 		@state[beginning[0]][beginning[1]] = "  "
 	end	
-
-	def plus_five
-		@state << 5
-	end
-
 end
 
 class TemporaryBoard < Board
@@ -330,3 +328,14 @@ class DebugBoard < Board
 		puts "  0 1 2 3 4 5 6 7"
 	end	
 end
+
+  a = DebugBoard.new
+  a.place_piece("H3", :wking)
+a.place_piece("F3", :bking)
+puts a.check_left([2,7], "white").inspect
+a.display_board
+
+#   puts a.check_if_check([3,2], "white")
+#  a.display_board
+# puts check_right([3,2], "white").inspect
+#  a.index_board
